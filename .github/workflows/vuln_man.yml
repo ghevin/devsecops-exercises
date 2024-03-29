@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sbom-${{matrix.project}}-docker
-          path: "vuln_apps/${{ matrix.project }}_docker-bom.json"
+          path: "${{ matrix.project }}_docker-bom.json"
           retention-days: 5
           if-no-files-found: error
 
