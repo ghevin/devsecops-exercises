@@ -67,7 +67,7 @@ jobs:
     name: Merge previously generated SBOM
     runs-on: ubuntu-latest
     needs: ["sbom", "sbom-docker"]
-    container: cyclonedx/container:tag
+    container: cyclonedx/cyclonedx-cli:0.25.0
     strategy:
       fail-fast: false
       matrix:
@@ -85,11 +85,11 @@ jobs:
           path: ./sboms-${{matrix.project}}
       - name: Merge previously generated sboms
         run: |
-          cyclonedx merge --input-files sboms-${{matrix.project}}/${{ matrix.project }}_bom.json sboms-${{matrix.project}}/${{ matrix.project }}_docker-bom.json --output-file file_out.json --hierarchical --name ${{ matrix.project }} --version ${{ github.run_number }}
+          cyclonedx merge --input-files sboms-${{matrix.project}}/${{ matrix.project }}_bom.json sboms-${{matrix.project}}/${{ matrix.project }}_docker-bom.json --output-file ${{ matrix.project }}_merged-bom.json --hierarchical --name ${{ matrix.project }} --version ${{ github.run_number }}
       - name: upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: sbom-${{matrix.project}}-merged
-          path: "path/to/file_out.json"
+          path: "${{ matrix.project }}_merged-bom.json"
           retention-days: 5
           if-no-files-found: error
